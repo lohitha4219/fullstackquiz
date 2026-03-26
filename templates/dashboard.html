@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins', sans-serif;
+        }
+
+        body{
+            height:100vh;
+            background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+            overflow:hidden;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:white;
+        }
+
+        /* Floating particles */
+        .circle{
+            position:absolute;
+            border-radius:50%;
+            background:rgba(0,255,255,0.15);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float{
+            from{transform:translateY(100vh) scale(0.5);}
+            to{transform:translateY(-10vh) scale(1);}
+        }
+
+        .card{
+            width:950px;
+            padding:40px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius:25px;
+            box-shadow:0 0 40px rgba(0,255,255,0.2);
+            text-align:center;
+            position:relative;
+            z-index:2;
+        }
+
+        h1{
+            font-size:38px;
+            font-weight:800;
+            color:#00f7ff;
+            text-shadow:0 0 15px rgba(0,247,255,0.8);
+        }
+
+        .profile img{
+            width:130px;
+            height:130px;
+            border-radius:50%;
+            border:4px solid #00f7ff;
+            box-shadow:0 0 25px #00f7ff;
+            margin-top:20px;
+            transition:0.4s;
+        }
+
+        .profile img:hover{
+            transform:scale(1.1);
+            box-shadow:0 0 45px #00ffff;
+        }
+
+        .username{
+            font-size:22px;
+            margin-top:10px;
+        }
+
+        .bio{
+            font-size:14px;
+            opacity:0.7;
+        }
+
+        /* Stats Cards */
+        .stats{
+            display:flex;
+            justify-content:space-around;
+            margin-top:30px;
+        }
+
+        .stat-card{
+            background:rgba(255,255,255,0.08);
+            padding:20px;
+            width:200px;
+            border-radius:15px;
+            transition:0.4s;
+        }
+
+        .stat-card:hover{
+            transform:translateY(-8px);
+            box-shadow:0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .stat-number{
+            font-size:28px;
+            font-weight:700;
+            color:#00f7ff;
+        }
+
+        .buttons{
+            margin-top:30px;
+        }
+
+        .btn{
+            display:inline-block;
+            margin:12px;
+            padding:12px 30px;
+            border-radius:50px;
+            text-decoration:none;
+            font-weight:600;
+            transition:0.3s;
+            color:white;
+        }
+
+        .quiz{background:#00b4db;}
+        .leader{background:#6a11cb;}
+        .cert{background:#11998e;}
+        .logout{background:#ff416c;}
+        .edit{background:#3a7bd5;}
+
+        .btn:hover{
+            transform:scale(1.1);
+            box-shadow:0 10px 25px rgba(0,0,0,0.6);
+        }
+
+        .motivation{
+            margin-top:25px;
+            font-size:15px;
+            color:#d1f7ff;
+        }
+
+        footer{
+            margin-top:20px;
+            font-size:12px;
+            color:#aaa;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Floating Circles -->
+<div class="circle" style="width:60px;height:60px;left:10%;animation-duration:20s;"></div>
+<div class="circle" style="width:40px;height:40px;left:40%;animation-duration:15s;"></div>
+<div class="circle" style="width:80px;height:80px;left:70%;animation-duration:18s;"></div>
+<div class="circle" style="width:30px;height:30px;left:85%;animation-duration:22s;"></div>
+
+<div class="card">
+
+    <h1>🚀 Welcome {{ request.user.username }}</h1>
+
+    <div class="profile">
+        {% if profile.image %}
+            <img src="{{ profile.image.url }}">
+        {% else %}
+            <img src="https://i.imgur.com/6VBx3io.png">
+        {% endif %}
+        <div class="username">{{ request.user.username }}</div>
+        <div class="bio">{{ profile.bio|default:"No bio added yet" }}</div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div>Total Score</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">--</div>
+            <div>Leaderboard Rank</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div>Quizzes Attempted</div>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <a href="/edit-profile/" class="btn edit">Edit Profile</a>
+        <a href="/quiz/home/" class="btn quiz">Start Quiz</a>
+        <a href="/leaderboard/" class="btn leader">Leaderboard</a>
+        <a href="/logout/" class="btn logout">Logout</a>
+    </div>
+
+    <div class="motivation">
+        💡 "Stay disciplined, stay dangerous." <br>
+        🏆 "Champions keep playing until they get it right." <br>
+        🔥 "Dark theme. Bright destiny."
+    </div>
+<footer>
+  <p>© 2026 LH Team | Full Stack Quiz Platform. All Rights Reserved.</p>
+</footer>
+
+</div>
+
+</body>
+</html>

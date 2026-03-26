@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login | Register | Admin</title>
+
+<style>
+:root {
+  --neon:#00ffff;
+  --pink:#ff00ff;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI";
+}
+
+/* 🌌 BACKGROUND ANIMATION */
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: radial-gradient(circle at top,#0f2027,#000);
+  overflow:hidden;
+}
+
+/* ✨ PARTICLE EFFECT */
+body::before{
+  content:"";
+  position:absolute;
+  width:200%;
+  height:200%;
+  background: repeating-radial-gradient(circle,#00ffff22 2px,transparent 5px);
+  animation: moveBg 20s linear infinite;
+}
+
+@keyframes moveBg{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(-200px,-200px);}
+}
+
+/* 💎 GLASS CARD */
+.container{
+  position:relative;
+  width:400px;
+  padding:30px;
+  border-radius:20px;
+  backdrop-filter:blur(20px);
+  background:rgba(0,0,0,0.6);
+  box-shadow:0 0 30px #00ffff;
+  z-index:1;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:scale(0.9);}
+  to{opacity:1; transform:scale(1);}
+}
+
+/* 🔥 TABS */
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tab{
+  flex:1;
+  padding:10px;
+  text-align:center;
+  border-radius:10px;
+  cursor:pointer;
+  color:var(--neon);
+  border:1px solid var(--neon);
+  transition:0.3s;
+}
+
+.tab:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 10px var(--neon);
+}
+
+.tab.active{
+  background:var(--neon);
+  color:black;
+}
+
+/* FORM */
+.form{ display:none; }
+.form.active{ display:block; }
+
+/* ✨ INPUT */
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  background:#111;
+  color:white;
+  transition:0.3s;
+}
+
+input:focus{
+  box-shadow:0 0 10px var(--neon);
+  transform:scale(1.03);
+}
+
+/* 🚀 BUTTON */
+.btn{
+  width:100%;
+  padding:12px;
+  border-radius:25px;
+  border:none;
+  margin-top:10px;
+  cursor:pointer;
+  font-weight:bold;
+  background:linear-gradient(45deg,#00ffff,#ff00ff);
+  color:black;
+  transition:0.3s;
+}
+
+.btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px #00ffff;
+}
+
+/* 📩 MESSAGE */
+.msg{
+  background:#00ffff;
+  color:black;
+  padding:8px;
+  border-radius:10px;
+  margin-bottom:10px;
+  text-align:center;
+  animation:fadeIn 0.5s;
+}
+
+/* 🔗 LINK */
+.link{
+  text-align:center;
+  margin-top:10px;
+}
+
+.link span{
+  color:var(--neon);
+  cursor:pointer;
+}
+
+.link span:hover{
+  text-shadow:0 0 10px var(--neon);
+}
+
+/* 🖱 CUSTOM CURSOR */
+body{
+  cursor: none;
+}
+
+.cursor{
+  position:fixed;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  background:var(--neon);
+  pointer-events:none;
+  box-shadow:0 0 10px var(--neon),0 0 20px var(--neon);
+  transform:translate(-50%,-50%);
+  transition:0.05s;
+  z-index:999;
+}
+</style>
+</head>
+
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<div class="container">
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="msg">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="tabs">
+  <div class="tab active" onclick="showForm('userLogin',this)">User Login</div>
+  <div class="tab" onclick="showForm('userRegister',this)">Register</div>
+  <div class="tab" onclick="showForm('adminLogin',this)">Admin</div>
+</div>
+
+<!-- USER LOGIN -->
+<form class="form active" id="userLogin" method="post">
+{% csrf_token %}
+<h3>User Login</h3>
+
+<input name="username" placeholder="Username" required>
+<input type="password" name="password" placeholder="Password" required>
+
+<input type="hidden" name="action" value="login">
+
+<button type="submit" class="btn">Login</button>
+</form>
+
+<!-- REGISTER -->
+<form class="form" id="userRegister" method="post">
+{% csrf_token %}
+<h3>Register</h3>
+
+<input name="username" placeholder="Username" required>
+<input name="email" placeholder="Email" required>
+<input type="password" name="password" placeholder="Password" required>
+
+<input type="hidden" name="action" value="register">
+
+<button type="submit" class="btn">Register</button>
+</form>
+
+<!-- ADMIN -->
+<form class="form" id="adminLogin" method="post">
+{% csrf_token %}
+<h3>Admin Login</h3>
+
+<input name="email" placeholder="Admin Email" required>
+<input type="password" name="password" placeholder="Password">
+
+<input type="hidden" name="action" value="admin_login">
+
+<button type="submit" class="btn">Login</button>
+<button type="submit" name="action" value="send_otp" class="btn">Send OTP</button>
+
+<div class="link">
+<span onclick="showForm('adminOtp')">Verify OTP</span>
+</div>
+</form>
+
+<!-- OTP -->
+<form class="form" id="adminOtp" method="post">
+{% csrf_token %}
+<h3>OTP Login</h3>
+
+<input name="otp" placeholder="Enter OTP" required>
+
+<input type="hidden" name="action" value="admin_otp">
+
+<button class="btn">Verify</button>
+
+<div class="link">
+<span onclick="showForm('adminLogin')">Back</span>
+</div>
+</form>
+
+</div>
+
+<script>
+function showForm(id,el){
+  document.querySelectorAll('.form').forEach(f=>f.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+/* 🔥 CURSOR EFFECT */
+const cursor = document.getElementById("cursor");
+document.addEventListener("mousemove", e=>{
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+</script>
+
+</body>
+</html>

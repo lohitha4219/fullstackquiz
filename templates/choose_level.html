@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Level</title>
+  <style>
+    :root{
+      --neon:#00ffff;
+      --bg1:#020617;
+      --bg2:#0b1220;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:"Segoe UI",sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:
+        radial-gradient(600px 300px at 20% 20%, rgba(0,255,255,.15), transparent 60%),
+        radial-gradient(600px 300px at 80% 80%, rgba(0,180,255,.12), transparent 60%),
+        linear-gradient(180deg,var(--bg2),var(--bg1));
+      color:white;
+    }
+
+    .container{
+      width:420px;
+      padding:35px;
+      border-radius:22px;
+      backdrop-filter:blur(18px);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.2);
+      box-shadow:
+        0 0 40px rgba(0,255,255,.2),
+        inset 0 0 25px rgba(0,255,255,.08);
+      text-align:center;
+      transition:0.4s ease;
+    }
+
+    .container:hover{
+      box-shadow:
+        0 0 60px rgba(0,255,255,.4),
+        0 0 120px rgba(0,180,255,.25);
+    }
+
+    h2{
+      margin-bottom:25px;
+      color:var(--neon);
+      text-shadow:0 0 15px var(--neon);
+      letter-spacing:1px;
+    }
+
+    .level-btn{
+      display:block;
+      width:100%;
+      padding:14px;
+      margin:15px 0;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.2);
+      background:rgba(0,255,255,.08);
+      color:white;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s ease;
+      text-decoration:none;
+    }
+
+    .level-btn:hover{
+      transform:translateY(-4px) scale(1.02);
+      background:rgba(0,255,255,.2);
+      border-color:var(--neon);
+      box-shadow:
+        0 0 20px var(--neon),
+        0 0 40px rgba(0,255,255,.6);
+    }
+
+    .easy:hover{
+      background:rgba(0,255,150,.25);
+      box-shadow:0 0 25px #00ffaa;
+    }
+
+    .medium:hover{
+      background:rgba(255,200,0,.25);
+      box-shadow:0 0 25px #ffd700;
+    }
+
+    .hard:hover{
+      background:rgba(255,0,90,.25);
+      box-shadow:0 0 25px #ff0055;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Select Level – {{ domain|upper }}</h2>
+
+    <a href="{% url 'start_quiz' domain 'easy' %}" class="level-btn easy">
+      Easy 🚀
+    </a>
+
+    <a href="{% url 'start_quiz' domain 'medium' %}" class="level-btn medium">
+      Medium ⚡
+    </a>
+
+    <a href="{% url 'start_quiz' domain 'hard' %}" class="level-btn hard">
+      Hard 🔥
+    </a>
+<footer>
+  <p>© 2026 LH Team | Full Stack Quiz Platform. All Rights Reserved.</p>
+</footer>
+  </div>
+
+  <div style="margin-top:20px;text-align:center;">
+  <a href="{% url 'dashboard' %}">
+    <button class="level-btn" style="background:#ff8800;">
+      🏠 Home
+    </button>
+  </a>
+</div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+
+<style>
+body {
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    font-family: Arial;
+    color: white;
+    padding: 20px;
+}
+
+/* HEADER */
+h1 {
+    text-align: center;
+    color: #00ffff;
+    text-shadow: 0 0 10px cyan;
+}
+
+/* CARDS */
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    margin: 15px;
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 0 15px #00ffff;
+    transition: 0.3s;
+}
+.card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px cyan;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #00ffff;
+}
+tr:hover {
+    background: rgba(0,255,255,0.1);
+}
+
+/* BUTTON */
+.btn {
+    padding: 5px 10px;
+    border-radius: 10px;
+    background: red;
+    color: white;
+    text-decoration: none;
+}
+.btn:hover {
+    background: darkred;
+}
+
+/* DOMAIN BLOCK */
+.domain {
+    margin-top: 30px;
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(0,0,0,0.4);
+    box-shadow: 0 0 10px cyan;
+}
+
+.question-box {
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+    transition: 0.3s;
+}
+.question-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px cyan;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>🚀 Admin Dashboard</h1>
+
+<!-- STATS -->
+<div class="card">👨‍🎓 Users<br><h2>{{ total_users }}</h2></div>
+<div class="card">❓ Questions<br><h2>{{ total_questions }}</h2></div>
+
+<hr>
+
+<!-- USERS -->
+<h2>👨‍🎓 Students</h2>
+<table>
+<tr>
+<th>Username</th>
+<th>Email</th>
+<th>Action</th>
+</tr>
+
+{% for s in students %}
+<tr>
+<td>{{ s.username }}</td>
+<td>{{ s.email }}</td>
+<td>
+<a class="btn" href="/quiz/delete-user/{{ s.id }}/">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<hr>
+
+<!-- ADD QUESTION -->
+<h2>➕ Add Question</h2>
+<form method="post" action="/quiz/add-question/">
+{% csrf_token %}
+
+<input name="question" placeholder="Question"><br><br>
+
+<input name="option1" placeholder="Option 1"><br>
+<input name="option2" placeholder="Option 2"><br>
+<input name="option3" placeholder="Option 3"><br>
+<input name="option4" placeholder="Option 4"><br><br>
+
+<input name="correct" placeholder="Correct Answer (1-4)"><br><br>
+
+<input name="domain" placeholder="Domain"><br>
+<input name="level" placeholder="Level"><br><br>
+
+<button>Add Question</button>
+</form>
+
+<hr>
+
+<!-- DOMAIN WISE QUESTIONS -->
+<h2>📚 Questions by Domain</h2>
+
+{% for domain, qs in domain_questions.items %}
+<div class="domain">
+    <h3>🌐 {{ domain }}</h3>
+
+    {% for q in qs %}
+    <div class="question-box">
+        <b>{{ q.question }}</b><br><br>
+
+        1️⃣ {{ q.option1 }}<br>
+        2️⃣ {{ q.option2 }}<br>
+        3️⃣ {{ q.option3 }}<br>
+        4️⃣ {{ q.option4 }}<br>
+
+        ✅ Correct: {{ q.correct_answer }}
+
+        <br><br>
+        <a class="btn" href="/quiz/delete-question/{{ q.id }}/">Delete</a>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+<br><br>
+<a href="/">🔙 Logout</a>
+
+</body>
+</html>

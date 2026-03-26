@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quiz Result</title>
+
+<style>
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(180deg,#081226,#020617);
+  font-family:Segoe UI,sans-serif;
+  color:white;
+}
+
+.result-box{
+  width:450px;
+  padding:30px;
+  border-radius:20px;
+  background:rgba(10,15,25,0.9);
+  box-shadow:0 0 30px cyan;
+  text-align:center;
+}
+
+h2{
+  color:#00ffff;
+  text-shadow:0 0 10px cyan;
+}
+
+.score{
+  font-size:22px;
+  margin:20px 0;
+  color:#00ff88;
+}
+
+.btn{
+  display:block;
+  margin:10px auto;
+  padding:10px;
+  width:80%;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.download{
+  background:#0066ff;
+  color:white;
+}
+
+.download:hover{
+  background:#00ffff;
+  color:black;
+}
+
+.certificate{
+  background:#00cc66;
+  color:black;
+}
+
+.certificate:hover{
+  box-shadow:0 0 15px #00ff88;
+}
+</style>
+</head>
+<body>
+
+<div class="result-box">
+
+<h2>Quiz Result</h2>
+
+<p><b>User:</b> {{ request.user.username }}</p>
+<p><b>Domain:</b> {{ domain|upper }}</p>
+<p><b>Level:</b> {{ level|upper }}</p>
+
+<div class="score">
+Score: {{ score }} / {{ total }}
+</div>
+
+<a href="{% url 'download_result' %}">
+<button class="btn download">Download Result</button>
+</a>
+
+{% if completed and total >= 100 and score >= 75 %}
+    <a href="{% url 'download_certificate' %}">
+        <button class="btn certificate">Download Certificate</button>
+    </a>
+{% else %}
+    <p style="color:orange;">
+        To get certificate:
+        <br>
+        ✔ Complete 100 Questions
+        <br>
+        ✔ Score at least 75%
+        <br>
+        ✔ Do not Quit
+    </p>
+{% endif %}
+
+<a href="{% url 'dashboard' %}">
+<button class="btn download" style="background:#ff8800;">
+Back To Domains
+</button>
+</a>
+
+</div>
+
+
+</body>
+</html>

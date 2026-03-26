@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Play Quiz</title>
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(180deg,#081226,#020617);
+  font-family:Segoe UI,sans-serif;
+  color:white;
+}
+
+.quiz-box{
+  width:500px;
+  padding:30px;
+  border-radius:20px;
+  background:rgba(10,15,25,0.9);
+  box-shadow:0 0 30px cyan;
+}
+
+.header{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.header h2{
+  margin:0;
+  color:#00ffff;
+  text-shadow:0 0 10px cyan;
+}
+
+.question-number{
+  font-size:14px;
+  color:#ccc;
+  margin-top:5px;
+}
+
+.timer{
+  text-align:right;
+  font-size:14px;
+  color:#ffcc00;
+}
+
+.question-text{
+  margin:20px 0;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.option{
+  margin:10px 0;
+}
+
+.option input{
+  display:none;
+}
+
+.option label{
+  display:block;
+  padding:12px;
+  border-radius:12px;
+  background:#1b2a40;
+  cursor:pointer;
+  transition:0.3s;
+  border:2px solid transparent;
+}
+
+/* Selected border */
+.option input:checked + label{
+  border:2px solid red;
+}
+
+/* Correct answer */
+.correct{
+  background:#00cc66 !important;
+  color:black !important;
+  box-shadow:0 0 15px #00ff88;
+}
+
+/* Wrong answer */
+.wrong{
+  background:#ff4444 !important;
+  color:white !important;
+  box-shadow:0 0 15px red;
+}
+
+.buttons{
+  margin-top:20px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.btn{
+  padding:10px 15px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.submit-btn{
+  background:#0066ff;
+  color:white;
+}
+
+.submit-btn:hover{
+  background:#00ffff;
+  color:black;
+  box-shadow:0 0 15px cyan;
+}
+
+.quit-btn{
+  background:#ff3333;
+  color:white;
+}
+
+.quit-btn:hover{
+  background:#ff0000;
+  box-shadow:0 0 15px red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+
+<div class="header">
+  <h2>{{ domain|upper }} - {{ level|upper }}</h2>
+  <div class="question-number">
+    Question {{ question_number }} / {{ total_questions }}
+  </div>
+</div>
+
+<div class="timer">
+  Time Left: <span id="time">20</span> sec
+</div>
+
+<div class="question-text">
+  {{ question.question_text }}
+</div>
+
+<form id="quizForm" method="POST" action="{% url 'submit_answer' %}" onsubmit="return validateAnswer()">
+{% csrf_token %}
+<input type="hidden" name="question_id" value="{{ question.id }}">
+
+<!-- OPTION 1 -->
+<div class="option">
+  <input type="radio" id="opt1" name="option" value="1">
+  <label for="opt1"
+    class="
+    {% if show_result and correct == 1 %}correct{% endif %}
+    {% if show_result and selected == 1 and selected != correct %}wrong{% endif %}
+    ">
+    {{ question.option1 }}
+  </label>
+</div>
+
+<!-- OPTION 2 -->
+<div class="option">
+  <input type="radio" id="opt2" name="option" value="2">
+  <label for="opt2"
+    class="
+    {% if show_result and correct == 2 %}correct{% endif %}
+    {% if show_result and selected == 2 and selected != correct %}wrong{% endif %}
+    ">
+    {{ question.option2 }}
+  </label>
+</div>
+
+<!-- OPTION 3 -->
+<div class="option">
+  <input type="radio" id="opt3" name="option" value="3">
+  <label for="opt3"
+    class="
+    {% if show_result and correct == 3 %}correct{% endif %}
+    {% if show_result and selected == 3 and selected != correct %}wrong{% endif %}
+    ">
+    {{ question.option3 }}
+  </label>
+</div>
+
+<!-- OPTION 4 -->
+<div class="option">
+  <input type="radio" id="opt4" name="option" value="4">
+  <label for="opt4"
+    class="
+    {% if show_result and correct == 4 %}correct{% endif %}
+    {% if show_result and selected == 4 and selected != correct %}wrong{% endif %}
+    ">
+    {{ question.option4 }}
+  </label>
+</div>
+
+<div class="buttons">
+
+{% if not show_result %}
+    <button type="submit" class="btn submit-btn">Submit</button>
+{% endif %}
+
+<a href="{% url 'quit_quiz' %}" class="btn quit-btn">Quit</a>
+
+</div>
+</form>
+</div>
+
+<!-- AUTO NEXT AFTER RESULT -->
+{% if show_result %}
+<script>
+setTimeout(function(){
+    window.location.href = "{% url 'start_quiz' domain level %}";
+},500);
+</script>
+{% endif %}
+
+<script>
+let timeLeft = 20;
+let timer = document.getElementById("time");
+
+window.autoSubmit = false;
+
+let countdown = setInterval(function(){
+  timeLeft--;
+  timer.innerText = timeLeft;
+
+  if(timeLeft <= 0){
+    clearInterval(countdown);
+
+    // ✅ mark as auto submit
+    window.autoSubmit = true;
+
+    document.getElementById("quizForm").submit();
+  }
+
+},1000);
+
+function validateAnswer(){
+
+    let selected = document.querySelector("input[name='option']:checked");
+
+    // ✅ If timer triggered → allow
+    if(window.autoSubmit === true){
+        return true;
+    }
+
+    // ❌ If user didn't select
+    if(!selected){
+        alert("Please select an option!");
+        return false;
+    }
+
+    return true;
+}
+
+</script>
+
+
+</body>
+</html>
